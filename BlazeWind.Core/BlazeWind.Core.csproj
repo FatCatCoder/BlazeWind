@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- Define the URL and local path of the file to download -->
+  <PropertyGroup>
+    <FileUrl>https://github.com/tailwindlabs/tailwindcss/releases/download/v3.3.2/tailwindcss-macos-x64</FileUrl>
+    <LocalFilePath>$(SolutionDir)\tailwindcss</LocalFilePath>
+    <DownloadCompleteFile>$(SolutionDir)\tailwindcss</DownloadCompleteFile>
+  </PropertyGroup>
+
+  <!-- Define a custom target to check for file existence and download if necessary -->
+  <Target Name="CheckAndDownloadFile" BeforeTargets="Build">
+    <PropertyGroup>
+      <FileExists>$(MSBuildProjectDirectory)\tailwindcss</FileExists>
+    </PropertyGroup>
+    
+    <!-- Check if the file exists -->
+    <Exec Command="if not exist '$(LocalFilePath)' echo File does not exist &gt; $(FileExists)" ContinueOnError="true" />
+
+    <!-- Download the file if it doesn't exist -->
+    <!--<DownloadFile
+        SourceUrl="$(FileUrl)"
+        DestinationFileName="tailwindcss"
+        DestinationFolder="$(SolutionDir)">
+    <Output TaskParameter="DownloadedFile" ItemName="Content" />
+    </DownloadFile>-->
+
+    <!--<Exec Condition="!Exists('$(LocalFilePath)')" Command="mv '$(LocalFilePath)' '$(SolutionDir)\tailwindcss'" />-->
+    <Exec Condition="!Exists('$(LocalFilePath)')" Command="chmod +x '$(LocalFilePath)'" />
+    <Exec Command="chmod +x '$(LocalFilePath)'" />
+
+    <!-- Output a message indicating whether the file was downloaded or not -->
+    <Message Text="File '$(LocalFilePath)' $(FileExists)" Importance="high" />
+  </Target>
+
+  <!-- Build target -->
+  <Target Name="Build" DependsOnTargets="CheckAndDownloadFile">
+    <!-- Your build steps go here, run tailwindcss build steps and dev watcher -->
+    
+  </Target>
+
+</Project>
